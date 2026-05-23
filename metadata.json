@@ -1,0 +1,6 @@
+{
+  "name": "Lumi Player",
+  "description": "A modern website to download the Lumi Player debug APK.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

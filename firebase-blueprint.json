@@ -1,0 +1,19 @@
+{
+  "entities": {
+    "Metadata": {
+      "title": "Metadata",
+      "description": "App metadata such as latest APK URL",
+      "type": "object",
+      "properties": {
+        "latestApkUrl": { "type": "string" },
+        "updatedAt": { "type": "string" }
+      }
+    }
+  },
+  "firestore": {
+    "app/{docId}": {
+      "schema": { "$ref": "Metadata" },
+      "description": "App configuration and dynamic metadata"
+    }
+  }
+}
