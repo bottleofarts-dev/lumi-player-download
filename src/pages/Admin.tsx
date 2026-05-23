@@ -1,5 +1,5 @@
 import { useState, ChangeEvent } from "react";
-import { UploadCloud, CheckCircle, AlertCircle, PlayCircle } from "lucide-react";
+import { UploadCloud, CheckCircle, AlertCircle, PlayCircle, Download } from "lucide-react";
 import { db, storage } from "../firebase";
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { doc, setDoc } from "firebase/firestore";
@@ -10,6 +10,28 @@ export function Admin() {
   const [progress, setProgress] = useState(0);
   const [status, setStatus] = useState<"idle" | "success" | "error">("idle");
   const [message, setMessage] = useState("");
+  const [urlInput, setUrlInput] = useState("");
+
+  const handleSaveUrl = async () => {
+    if (!urlInput) return;
+    setUploading(true);
+    setStatus("idle");
+    try {
+      await setDoc(doc(db, "app", "metadata"), {
+        latestApkUrl: urlInput,
+        updatedAt: new Date().toISOString()
+      });
+      setStatus("success");
+      setMessage("Download link updated successfully!");
+      setUrlInput("");
+    } catch (err: any) {
+      console.error(err);
+      setStatus("error");
+      setMessage(err.message || "Failed to save link.");
+    } finally {
+      setUploading(false);
+    }
+  };
 
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files.length > 0) {
@@ -76,20 +98,42 @@ export function Admin() {
         <p className="text-neutral-400 mb-8 text-sm">Upload a new APK version directly to Firebase. The homepage download link will update automatically.</p>
 
         <div className="space-y-6">
+          <div className="bg-neutral-900/50 border border-neutral-800 rounded-2xl p-6">
+            <h3 className="text-sm font-medium text-neutral-200 mb-4">Option 1: Paste Download Link (Easiest)</h3>
+            <div className="flex gap-3">
+              <input 
+                type="text" 
+                placeholder="e.g. https://domain.com/app.apk"
+                className="flex-1 bg-neutral-950 border border-neutral-800 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-yellow-500"
+                value={urlInput}
+                onChange={(e) => setUrlInput(e.target.value)}
+              />
+              <button 
+                onClick={handleSaveUrl}
+                disabled={!urlInput || uploading}
+                className="bg-yellow-400 text-neutral-950 px-6 font-bold rounded-xl hover:bg-yellow-300 disabled:opacity-50 transition-colors"
+              >
+                Save Link
+              </button>
+            </div>
+          </div>
+
           <div className="relative border-2 border-dashed border-neutral-700 bg-neutral-900/50 rounded-2xl p-8 text-center hover:bg-neutral-800/50 transition-colors">
+            <h3 className="text-sm font-medium text-neutral-200 mb-4">Option 2: Direct APK Upload</h3>
             <input
               type="file"
               accept=".apk"
               onChange={handleFileChange}
               className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
               disabled={uploading}
+              style={{ top: '3rem' }}
             />
             <div className="flex flex-col items-center justify-center gap-3">
               <UploadCloud className="w-10 h-10 text-yellow-500" />
               <div className="text-sm font-medium text-neutral-200">
                 {file ? file.name : "Select or drag an APK file here"}
               </div>
-              {!file && <div className="text-xs text-neutral-500">Only .apk files are supported</div>}
+              {!file && <div className="text-xs text-neutral-500">Note: Requires Firebase Storage to be enabled in Console</div>}
             </div>
           </div>
 
@@ -130,6 +174,22 @@ export function Admin() {
               <div className="text-sm">{message}</div>
             </div>
           )}
+        </div>
+        
+        <div className="mt-8 pt-8 border-t border-neutral-800">
+          <h3 className="text-sm font-medium text-neutral-200 mb-4">Export AI Studio Source Code</h3>
+          <p className="text-xs text-neutral-400 mb-4">
+            Download the complete source code of this React application to deploy somewhere else. 
+            (AI Studio Export fallback)
+          </p>
+          <a
+            href="/source.zip"
+            download="Lumi-Player-Source.zip"
+            className="w-full bg-neutral-800 text-neutral-200 font-bold py-3.5 rounded-xl flex items-center justify-center gap-2 hover:bg-neutral-700 transition-colors"
+          >
+            <Download className="w-5 h-5" />
+            Download Source ZIP
+          </a>
         </div>
       </div>
     </div>

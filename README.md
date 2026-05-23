@@ -1,20 +1,23 @@
-<div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://ai.google.dev/static/site-assets/images/share-ais-513315318.png" />
-</div>
+# Lumi Player
 
-# Run and deploy your AI Studio app
+An amazing application for enjoying your media content.
 
-This contains everything you need to run your app locally.
+## Getting Started
 
-View your app in AI Studio: https://ai.studio/apps/dc6ac238-44f6-427e-bbfa-b963f612f241
+1. Clone the repository.
+2. Run `npm install` to install dependencies.
+3. Run `npm run dev` to start the development server.
 
-## Run Locally
+## Features
 
-**Prerequisites:**  Node.js
+- High performance video player
+- Easy to use interface
+- Firebase integration for dynamic content delivery
 
+## Deployment
 
-1. Install dependencies:
-   `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
-3. Run the app:
-   `npm run dev`
+Build the application using `npm run build`. 
+The output will be placed in the `dist` directory.
+
+---
+*Note: This repository is connected via Google AI Studio's GitHub integration.*
